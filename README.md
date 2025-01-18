@@ -8,8 +8,9 @@ with elements of an [ArchivesSpace](https://github.com/archivesspace/archivesspa
 ```
 $ do-tools -h     # prints out available commands
 
-# example command 
+# example commands 
 $ do-tools do refresh --ao-uri /repositories/11/archival_objects/23745 -c /path/to/config.yaml -e test 
+$ do-tools do update   -a      /repositories/3/archival_objects/512700 -o "https://hdl.handle.net/2333.1/material-request-placeholder" -f "https://hdl.handle.net/2333.1/djh9w43b" -u "video-service"  -c cmd/testsupport/config.yaml -e test
 ```
 
 **NOTE:**   
