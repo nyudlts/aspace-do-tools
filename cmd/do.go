@@ -74,14 +74,15 @@ to the title field of all digital objects ('do's) attached to the ao.`,
 
 var doUpdateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "Update the File URI and Use Statement of a Digital Object File Version",
-	Long: `The update subcommand allows one to change the File URI and Use Statement
+	Short: "Update the File URI and/or Use Statement of a Digital Object File Version",
+	Long: `The update subcommand allows one to change the File URI and/or the Use Statement
 for a matching file version associated with an archival object (ao).  
 
-The code looks up the ao using the aoURI argument, 
-retrieves the digital objects (dos) associated with the ao, and
-updates any do file versions that match the --old-file-uri argument
-with the --file-uri argument and --use-statement argument.`,
+The code retrieves the digital objects (dos) associated with the ao 
+specified by the aoURI argument, and then updates any do file versions 
+that match the --old-file-uri argument with the --file-uri argument 
+and/or --use-statement argument.`,
+	Args: doUpdateCheckArgs,
 	RunE: doUpdate,
 }
 
@@ -99,14 +100,11 @@ func init() {
 	doUpdateCmd.Flags().StringVarP(&aoURI, aoFlags.URI, aoFlags.URIShort, "", "uri of the archival object")
 	doUpdateCmd.MarkFlagRequired(aoFlags.URI)
 
-	doUpdateCmd.Flags().StringVarP(&oldFileURI, oldFileURIFlags.OldFileURI, oldFileURIFlags.OldFileURIShort, "", "file version URL to match")
+	doUpdateCmd.Flags().StringVarP(&oldFileURI, oldFileURIFlags.OldFileURI, oldFileURIFlags.OldFileURIShort, "", "file version URL to match [REQUIRED]")
 	doUpdateCmd.MarkFlagRequired(oldFileURIFlags.OldFileURI)
 
-	doUpdateCmd.Flags().StringVarP(&fileURI, fileURIFlags.FileURI, fileURIFlags.FileURIShort, "", "new file version URL")
-	doUpdateCmd.MarkFlagRequired(fileURIFlags.FileURI)
-
-	doUpdateCmd.Flags().StringVarP(&useStatement, useStatementFlags.UseStatement, useStatementFlags.UseStatementShort, "", "use statement for the new file version")
-	doUpdateCmd.MarkFlagRequired(useStatementFlags.UseStatement)
+	doUpdateCmd.Flags().StringVarP(&fileURI, fileURIFlags.FileURI, fileURIFlags.FileURIShort, "", "new file version URL [REQUIRED if --use-statement is not specified]")
+	doUpdateCmd.Flags().StringVarP(&useStatement, useStatementFlags.UseStatement, useStatementFlags.UseStatementShort, "", "use statement for the new file version [REQUIRED if --file-uri is not specified]")
 
 	// build command hierarchy
 	rootCmd.AddCommand(doCmd)
@@ -151,6 +149,17 @@ func doRefresh(cmd *cobra.Command, args []string) (err error) {
 	return nil
 }
 
+func doUpdateCheckArgs(cmd *cobra.Command, args []string) error {
+	if fileURI == "" && useStatement == "" {
+		return fmt.Errorf("--file-uri and/or --use-statement must be specified")
+	}
+
+	// arguments OK so disable cobra's usage output on error
+	cmd.SilenceUsage = true
+
+	return nil
+}
+
 func doUpdate(cmd *cobra.Command, args []string) (err error) {
 	setClient()
 
@@ -178,8 +187,12 @@ func doUpdate(cmd *cobra.Command, args []string) (err error) {
 		for i, fv := range do.FileVersions {
 			if fv.FileURI == oldFileURI {
 				found = true
-				do.FileVersions[i].FileURI = fileURI
-				do.FileVersions[i].UseStatement = useStatement
+				if fileURI != "" {
+					do.FileVersions[i].FileURI = fileURI
+				}
+				if useStatement != "" {
+					do.FileVersions[i].UseStatement = useStatement
+				}
 			}
 		}
 

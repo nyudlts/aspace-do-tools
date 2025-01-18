@@ -102,13 +102,23 @@ func TestDORefresh(t *testing.T) {
 }
 
 func TestDOUpdate(t *testing.T) {
-	var args []string
-	aoURI := "/repositories/3/archival_objects/512700"
-	oldFileURI := "https://hdl.handle.net/2333.1/djh9w43b"
-	oldUseStatement := "image-service"
 
-	newFileURI := "https://hdl.handle.net/2333.1/material-request-placeholder"
-	newUseStatement := "audio-reading-room"
+	scenarios := [][]string{
+		// "aoURI", "oldFileURI", "oldUseStatement", "newFileURI", "newUseStatement"
+		{"/repositories/3/archival_objects/512700", "https://hdl.handle.net/2333.1/djh9w43b", "image-service", "https://hdl.handle.net/2333.1/material-request-placeholder", "audio-reading-room"},
+		{"/repositories/3/archival_objects/512700", "https://hdl.handle.net/2333.1/djh9w43b", "image-service", "https://hdl.handle.net/2333.1/bananas-are-great", ""},
+		{"/repositories/3/archival_objects/512700", "https://hdl.handle.net/2333.1/djh9w43b", "image-service", "", "video-reading-room"},
+		{"/repositories/3/archival_objects/512700", "https://hdl.handle.net/2333.1/djh9w43b", "image-service", "", ""},
+	}
+
+	for s := range scenarios {
+		runDOUPdateTest(t, scenarios[s][0], scenarios[s][1], scenarios[s][2], scenarios[s][3], scenarios[s][4])
+	}
+
+}
+
+func runDOUPdateTest(t *testing.T, aoURI, oldFileURI, oldUseStatement, newFileURI, newUseStatement string) {
+	var args []string
 
 	setClient()
 
@@ -169,12 +179,29 @@ func TestDOUpdate(t *testing.T) {
 		t.Errorf("post test: could not get Digital Object")
 	}
 
-	// assert that the values were changed
-	if do.FileVersions[0].FileURI != newFileURI {
-		t.Errorf("post test: Digital Object file version has unexpected FileURI: %s != %s", do.FileVersions[0].FileURI, newFileURI)
+	// assert that the values that were supposed to be changed were actually changed
+	if newFileURI == "" {
+		// nothing should have changed
+		if do.FileVersions[0].FileURI != oldFileURI {
+			t.Errorf("post test: Digital Object file version has unexpected FileURI: %s != %s", do.FileVersions[0].FileURI, newFileURI)
+		}
+	} else {
+		// the fileURI should have changed
+		if do.FileVersions[0].FileURI != newFileURI {
+			t.Errorf("post test: Digital Object file version has unexpected FileURI: %s != %s", do.FileVersions[0].FileURI, newFileURI)
+		}
 	}
-	if do.FileVersions[0].UseStatement != newUseStatement {
-		t.Errorf("post test: Digital Object file version has unexpected UseStatement: %s != %s", do.FileVersions[0].UseStatement, newUseStatement)
+
+	if newUseStatement == "" {
+		// nothing should have changed
+		if do.FileVersions[0].UseStatement != oldUseStatement {
+			t.Errorf("post test: Digital Object file version has unexpected UseStatement: %s != %s", do.FileVersions[0].UseStatement, oldUseStatement)
+		}
+	} else {
+		// the UseStatement should have changed
+		if do.FileVersions[0].UseStatement != newUseStatement {
+			t.Errorf("post test: Digital Object file version has unexpected UseStatement: %s != %s", do.FileVersions[0].UseStatement, newUseStatement)
+		}
 	}
 
 	// reset the Digital Object(s)
