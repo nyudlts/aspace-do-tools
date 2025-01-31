@@ -3,12 +3,13 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/nyudlts/go-aspace"
-	"github.com/spf13/cobra"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/nyudlts/go-aspace"
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -86,7 +87,7 @@ func updateRoleChunk(chunk []ObjectID, resultChannel chan []Result, workerID int
 		}
 
 		//check for blank roles
-		if hasUndefinedFV(fileVersions) == true {
+		if hasUndefinedFV(fileVersions) {
 			do.FileVersions = updateFileVersionRoles(fileVersions)
 
 			if !test {
@@ -121,14 +122,14 @@ func updateFileVersionRoles(fvs []aspace.FileVersion) []aspace.FileVersion {
 			continue
 		}
 		if fv.UseStatement == "" || fv.UseStatement == "service" {
-			if aeonMatcher.MatchString(fv.FileURI) == true {
+			if aeonMatcher.MatchString(fv.FileURI) {
 				fv.UseStatement = "electronic-records-reading-room"
 				fv.FileURI = "https://hdl.handle.net/2333.1/material-request-placeholder"
 				newFvs = append(newFvs, fv)
 				continue
 			}
 
-			if waybackMatcher.MatchString(fv.FileURI) == true || cdlibMatcher.MatchString(fv.FileURI) == true {
+			if waybackMatcher.MatchString(fv.FileURI) || cdlibMatcher.MatchString(fv.FileURI) {
 				fv.UseStatement = "external-link"
 				newFvs = append(newFvs, fv)
 				continue

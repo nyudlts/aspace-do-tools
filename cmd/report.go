@@ -3,11 +3,12 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"sort"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -28,7 +29,7 @@ func isOutlier(role string) bool {
 	return false
 }
 
-var outfile *os.File
+//var outfile *os.File
 
 var reportCmd = &cobra.Command{
 	Use:   "report",
@@ -59,7 +60,7 @@ func ReportDOs() {
 	for range doChunks {
 		chunk := <-resultsChannel
 		for k, v := range chunk {
-			if HasRole(results, k) == true {
+			if HasRole(results, k) {
 				results[k] = results[k] + v
 			} else {
 				results[k] = v
@@ -120,7 +121,7 @@ func GetRoles(chunk []ObjectID, resultsChannel chan map[string]int, worker int, 
 					writer.Flush()
 				}
 
-				if HasRole(results, role) == true {
+				if HasRole(results, role) {
 					results[role] = results[role] + 1
 				} else {
 					results[role] = 1

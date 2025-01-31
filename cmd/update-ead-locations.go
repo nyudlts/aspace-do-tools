@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -68,7 +69,7 @@ func updateLocation(resourceChunk []ObjectID, resultChannel chan []Result, worke
 			results = append(results, Result{Code: "ERROR", URI: resourceID.String(), Msg: strings.ReplaceAll(err.Error(), "\n", ""), Time: time.Now(), Worker: workerID})
 			continue
 		}
-		if resource.Publish != true {
+		if !resource.Publish {
 			results = append(results, Result{Code: "SKIPPED", URI: resource.URI, Msg: "Resource not set to Publish", Time: time.Now(), Worker: workerID})
 			continue
 		}

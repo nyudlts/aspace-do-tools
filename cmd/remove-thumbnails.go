@@ -3,11 +3,12 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/nyudlts/go-aspace"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/nyudlts/go-aspace"
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -83,7 +84,7 @@ func removeThumbnails(chunk []ObjectID, resultChannel chan []Result, worker int)
 		if len(do.FileVersions) > 0 {
 
 			//check for thumnbnails
-			if do.ContainsUseStatement("image-thumbnail") == true {
+			if do.ContainsUseStatement("image-thumbnail") {
 				//delete any dos that only have a thumbnail
 				if len(do.FileVersions) == 1 {
 					if !test {
@@ -92,10 +93,10 @@ func removeThumbnails(chunk []ObjectID, resultChannel chan []Result, worker int)
 							results = append(results, Result{"ERROR", do.URI, err.Error(), time.Now(), worker})
 							continue
 						}
-						results = append(results, Result{"DELETED", do.URI, fmt.Sprintf("%s", strings.ReplaceAll(response, "\n", "")), time.Now(), worker})
+						results = append(results, Result{"DELETED", do.URI, strings.ReplaceAll(response, "\n", ""), time.Now(), worker})
 						continue
 					} else {
-						results = append(results, Result{"SKIPPED", do.URI, fmt.Sprintf("TEST-MODE, DO deletion skipped"), time.Now(), worker})
+						results = append(results, Result{"SKIPPED", do.URI, "TEST-MODE, DO deletion skipped", time.Now(), worker})
 						continue
 					}
 				}
@@ -108,14 +109,14 @@ func removeThumbnails(chunk []ObjectID, resultChannel chan []Result, worker int)
 						results = append(results, Result{"ERROR", do.URI, err.Error(), time.Now(), worker})
 						continue
 					}
-					results = append(results, Result{"UPDATED", do.URI, fmt.Sprintf("%s", strings.ReplaceAll(response, "\n", "")), time.Now(), worker})
+					results = append(results, Result{"UPDATED", do.URI, strings.ReplaceAll(response, "\n", ""), time.Now(), worker})
 					continue
 				} else {
-					results = append(results, Result{"SKIPPED", do.URI, fmt.Sprintf("Test-Mode, DO update skipped"), time.Now(), worker})
+					results = append(results, Result{"SKIPPED", do.URI, "Test-Mode, DO update skipped", time.Now(), worker})
 					continue
 				}
 			} else {
-				results = append(results, Result{"SKIPPED", do.URI, fmt.Sprintf("No image-thumbnails in file versions"), time.Now(), worker})
+				results = append(results, Result{"SKIPPED", do.URI, "No image-thumbnails in file versions", time.Now(), worker})
 				continue
 			}
 		}
