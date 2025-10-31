@@ -1,11 +1,9 @@
 module github.com/nyudlts/aspace-migration
 
-go 1.21
-
-toolchain go1.23.0
+go 1.25
 
 require (
-	github.com/nyudlts/go-aspace v0.7.1
+	github.com/nyudlts/go-aspace v0.8.1
 	github.com/spf13/cobra v1.3.0
 )
 

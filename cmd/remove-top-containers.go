@@ -3,11 +3,12 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -78,7 +79,7 @@ func removeTopContainers(tcChunk []ObjectID, resultChannel chan []Result, worker
 					results = append(results, Result{"ERROR", tc.URI, err.Error(), time.Now(), worker})
 					continue
 				}
-				results = append(results, Result{"DELETED", tc.URI, strings.ReplaceAll(msg, "\n", ""), time.Now(), worker})
+				results = append(results, Result{"DELETED", tc.URI, strings.ReplaceAll(msg.String(), "\n", ""), time.Now(), worker})
 				continue
 			} else {
 				results = append(results, Result{"SKIPPED", tc.URI, strings.ReplaceAll("TEST-MODE", "\n", ""), time.Now(), worker})

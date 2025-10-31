@@ -2,3 +2,4 @@ test:
   url: http://localhost:8489
   username: YOUR-USERNAME-HERE
   password: YOUR-PASSWORD-HERE
+  timeout: <your connection timeout here, typically 20>

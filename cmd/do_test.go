@@ -49,7 +49,7 @@ func TestDORefresh(t *testing.T) {
 		t.FailNow()
 	}
 
-	body, err := client.UpdateArchivalObject(repoID, aoObjectID, ao)
+	body, err := client.UpdateArchivalObject(repoID, aoObjectID, &ao)
 	if err != nil {
 		t.Errorf("%v, %s", err, body)
 	}
@@ -74,7 +74,7 @@ func TestDORefresh(t *testing.T) {
 	}
 
 	ao.Title = saveAOTitle
-	body, err = client.UpdateArchivalObject(repoID, aoObjectID, ao)
+	body, err = client.UpdateArchivalObject(repoID, aoObjectID, &ao)
 	if err != nil {
 		t.Errorf("during AO restore: %v, %s", err, body)
 	}
@@ -93,7 +93,7 @@ func TestDORefresh(t *testing.T) {
 			t.FailNow()
 		}
 
-		body, err := client.UpdateDigitalObject(repoID, doObjectID, do)
+		body, err := client.UpdateDigitalObject(repoID, doObjectID, &do)
 
 		if err != nil {
 			t.Errorf("post test: %v : %s", err, body)
@@ -214,7 +214,7 @@ func runDOUPdateTest(t *testing.T, aoURI, oldFileURI, oldUseStatement, newFileUR
 		t.FailNow()
 	}
 
-	body, err := client.UpdateDigitalObject(repoID, doObjectID, do)
+	body, err := client.UpdateDigitalObject(repoID, doObjectID, &do)
 
 	if err != nil {
 		t.Errorf("post test: %v : %s", err, body)

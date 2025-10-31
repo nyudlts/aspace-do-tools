@@ -140,7 +140,7 @@ func doRefresh(cmd *cobra.Command, args []string) (err error) {
 		}
 
 		// update the do
-		body, err := client.UpdateDigitalObject(repoID, objectID, do)
+		body, err := client.UpdateDigitalObject(repoID, objectID, &do)
 		if err != nil {
 			return fmt.Errorf("%v : %s", err, body)
 		}
@@ -207,7 +207,7 @@ func doUpdate(cmd *cobra.Command, args []string) (err error) {
 		}
 
 		// update the do
-		body, err := client.UpdateDigitalObject(repoID, objectID, do)
+		body, err := client.UpdateDigitalObject(repoID, objectID, &do)
 		if err != nil {
 			return fmt.Errorf("%v : %s", err, body)
 		}
