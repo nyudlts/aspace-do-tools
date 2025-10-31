@@ -91,12 +91,12 @@ func updateRoleChunk(chunk []ObjectID, resultChannel chan []Result, workerID int
 			do.FileVersions = updateFileVersionRoles(fileVersions)
 
 			if !test {
-				msg, err := client.UpdateDigitalObject(oid.RepoID, oid.ObjectID, do)
+				msg, err := client.UpdateDigitalObject(oid.RepoID, oid.ObjectID, &do)
 				if err != nil {
 					results = append(results, Result{Code: "ERROR", URI: do.URI, Msg: err.Error(), Time: time.Time{}, Worker: workerID})
 					continue
 				}
-				results = append(results, Result{Code: "UPDATED", URI: do.URI, Msg: strings.ReplaceAll(msg, "\n", ""), Time: time.Time{}, Worker: workerID})
+				results = append(results, Result{Code: "UPDATED", URI: do.URI, Msg: strings.ReplaceAll(msg.String(), "\n", ""), Time: time.Time{}, Worker: workerID})
 				continue
 			} else {
 				results = append(results, Result{"SKIPPED", do.URI, "TEST-MODE Skipping", time.Now(), workerID})

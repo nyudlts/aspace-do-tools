@@ -39,7 +39,7 @@ type Result struct {
 }
 
 func setClient() {
-	client, err = aspace.NewClient(config, env, 20)
+	client, err = aspace.NewClient(config, env)
 	if err != nil {
 		panic(err)
 	}

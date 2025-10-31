@@ -92,12 +92,12 @@ func updateHttp(doChunk []ObjectID, resultChannel chan []Result, worker int) {
 			newFV := updateHttpURI(do.FileVersions)
 			do.FileVersions = newFV
 			if !test {
-				response, err := client.UpdateDigitalObject(doid.RepoID, doid.ObjectID, do)
+				response, err := client.UpdateDigitalObject(doid.RepoID, doid.ObjectID, &do)
 				if err != nil {
 					results = append(results, Result{"ERROR", do.URI, err.Error(), time.Now(), worker})
 					continue
 				}
-				results = append(results, Result{"UPDATED", do.URI, strings.ReplaceAll(response, "\n", ""), time.Now(), worker})
+				results = append(results, Result{"UPDATED", do.URI, strings.ReplaceAll(response.String(), "\n", ""), time.Now(), worker})
 				continue
 			} else {
 				results = append(results, Result{"SKIPPED", do.URI, "Test-Mode, DO update skipped", time.Now(), worker})
